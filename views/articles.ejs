@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Articles</title>
+    <link rel="stylesheet" href="/styles.css" />
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        margin: 20px;
+        background-color: #f4f4f4;
+      }
+      .container {
+        max-width: 800px;
+        margin: auto;
+        background: white;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+      }
+      h1 {
+        text-align: center;
+        color: #333;
+      }
+      .article {
+        border-bottom: 1px solid #ddd;
+        padding: 15px 0;
+      }
+      .article:last-child {
+        border-bottom: none;
+      }
+      .article h2 {
+        color: #007bff;
+        margin: 0;
+      }
+      .article p {
+        color: #555;
+      }
+      .article small {
+        color: #999;
+      }
+      .form-container {
+        margin-top: 20px;
+        padding: 15px;
+        background: #fff;
+        border-radius: 5px;
+        box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.1);
+      }
+      input,
+      textarea {
+        width: 100%;
+        padding: 10px;
+        margin-top: 5px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+      }
+      button {
+        margin-top: 10px;
+        padding: 10px;
+        width: 100%;
+        background: #007bff;
+        color: white;
+        border: none;
+        cursor: pointer;
+        border-radius: 5px;
+      }
+      button:hover {
+        background: #0056b3;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>Articles</h1>
+
+      <% articles.forEach(article => { %>
+      <div class="article">
+        <h2><%= article.title %></h2>
+        <p><%= article.content %></p>
+        <small
+          >By <%= article.author %> on <%= new
+          Date(article.createdAt).toLocaleDateString() %></small
+        >
+      </div>
+      <% }) %>
+
+      <div class="form-container">
+        <h2>Add a New Article</h2>
+        <form action="/articles" method="POST">
+          <input type="text" name="title" placeholder="Title" required />
+          <textarea name="content" placeholder="Content" required></textarea>
+          <input type="text" name="author" placeholder="Author" required />
+          <button type="submit">Submit</button>
+        </form>
+      </div>
+    </div>
+  </body>
+</html>

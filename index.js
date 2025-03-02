@@ -1,31 +1,57 @@
 const express = require("express");
-const connectDB = require("./db"); // Import the database connection function
+const connectDB = require("./db");
+const Article = require("./models/Article"); // Import the Article model
+const bodyParser = require("express"); // Middleware to handle form data
 
 const app = express();
 const port = 3000;
 
-// Connect to MongoDB before starting the server
+app.set("view engine", "ejs");
+app.use(express.static("public"));
+app.use(bodyParser.urlencoded({ extended: true })); // Parse form data
+
 connectDB()
   .then(() => {
     console.log("✅ Database connected successfully!");
 
-    // Start the server only after a successful database connection
     app.listen(port, () => {
       console.log(`🚀 Server is running at http://localhost:${port}`);
     });
   })
   .catch((err) => {
     console.error("❌ Failed to connect to MongoDB:", err);
-    process.exit(1); // Stop the app if the database connection fails
+    process.exit(1);
   });
 
-// Set EJS as the template engine
-app.set("view engine", "ejs");
-
-// Serve static files (CSS, images, etc.)
-app.use(express.static("public"));
-
-// Dynamic route rendering EJS template
+// Home route
 app.get("/", (req, res) => {
   res.render("index", { username: "John Doe" });
+});
+
+// Display all articles
+app.get("/articles", async (req, res) => {
+  try {
+    const articles = await Article.find(); // Fetch all articles from MongoDB
+    res.render("articles", { articles }); // Pass articles to the EJS view
+  } catch (error) {
+    res.status(500).send("Error fetching articles");
+  }
+});
+
+// Handle article submission
+app.post("/articles", async (req, res) => {
+  try {
+    const { title, content, author } = req.body;
+
+    const newArticle = new Article({
+      title,
+      content,
+      author,
+    });
+
+    await newArticle.save();
+    res.redirect("/articles"); // Redirect to the articles page after saving
+  } catch (error) {
+    res.status(500).send("Error saving article");
+  }
 });
